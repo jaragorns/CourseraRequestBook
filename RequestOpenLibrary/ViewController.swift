@@ -8,18 +8,24 @@
 
 import UIKit
 
-class ViewController: UIViewController {
-
+class ViewController: UIViewController, UITextFieldDelegate{
+    
+    @IBOutlet weak var textFieldISBN: UITextField!
+    @IBOutlet weak var textViewResponse: UITextView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    @IBAction func searchBook(sender: AnyObject){
+        
+        var urls = "https://openlibrary.org/api/books?jscmd=data&format=json&bibkeys=ISBN:"
+        urls+=self.textFieldISBN.text!
+        let url = NSURL(string: urls)
+        let datos: NSData? = NSData(contentsOfURL: url!)
+        textViewResponse.text = String(data: datos!, encoding: NSUTF8StringEncoding)
+        
     }
-
-
+    
 }
 
