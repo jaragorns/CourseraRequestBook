@@ -23,7 +23,18 @@ class ViewController: UIViewController, UITextFieldDelegate{
         urls+=self.textFieldISBN.text!
         let url = NSURL(string: urls)
         let datos: NSData? = NSData(contentsOfURL: url!)
-        textViewResponse.text = String(data: datos!, encoding: NSUTF8StringEncoding)
+        if datos == nil {
+            let alertController = UIAlertController(title: "Error", message:"Error de comunicación.", preferredStyle: UIAlertControllerStyle.Alert)
+            
+            alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
+            
+            self.presentViewController(alertController, animated: true, completion: nil)
+            
+        } else {
+            
+            textViewResponse.text = String(data: datos!, encoding: NSUTF8StringEncoding)
+            
+        }
         
     }
     
