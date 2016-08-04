@@ -21,11 +21,6 @@ class ViewController: UIViewController, UITextFieldDelegate{
     override func viewDidLoad() {
         super.viewDidLoad()
     }
-    
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        let invalidCharacters = NSCharacterSet(charactersInString: "0123456789").invertedSet
-        return string.rangeOfCharacterFromSet(invalidCharacters, options: [], range: string.startIndex ..< string.endIndex) == nil
-    }
 
     @IBAction func searchBook(sender: AnyObject){
         
@@ -35,17 +30,43 @@ class ViewController: UIViewController, UITextFieldDelegate{
         let datos = NSData(contentsOfURL: url!)
         var autores = ""
         
+        let num = Int(self.textFieldISBN.text!)
+        if num != nil {
+            print("Valid Integer")
+        }
+        else {
+            print("Not Valid Integer")
+        }
+        
         if datos == nil {
+            
             let alertController = UIAlertController(title: "Error", message:"Error de comunicación.", preferredStyle: UIAlertControllerStyle.Alert)
             
             alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
             
             self.presentViewController(alertController, animated: true, completion: nil)
             
-        } else {
+        } else if num == nil {
             
+            let alertController = UIAlertController(title: "Error", message:"ISBN Solo acepta numeros.", preferredStyle: UIAlertControllerStyle.Alert)
+            
+            alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
+            
+            self.presentViewController(alertController, animated: true, completion: nil)
+            
+        } else if self.textFieldISBN.text?.characters.count < 10 || self.textFieldISBN.text?.characters.count > 12  || self.textFieldISBN.text?.characters.count == 11 {
+            
+            let alertController = UIAlertController(title: "Error", message:"ISBN Codigo de 10 o 12 numeros.", preferredStyle: UIAlertControllerStyle.Alert)
+            
+            alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
+            
+            self.presentViewController(alertController, animated: true, completion: nil)
+            
+        }else{
+        
             do{
                 let json = try NSJSONSerialization.JSONObjectWithData(datos!, options: NSJSONReadingOptions.MutableLeaves)
+                
                 let dic1 = json as! NSDictionary
                 
                 //TITLE
@@ -87,7 +108,8 @@ class ViewController: UIViewController, UITextFieldDelegate{
                     coverImage.alpha = 0
                 }
                 
-            }catch _{
+            }catch let error as NSError {
+                print("json error: \(error.localizedDescription)")
                 
                 let alertController = UIAlertController(title: "Error", message:"Error en lectura.", preferredStyle: UIAlertControllerStyle.Alert)
                 
